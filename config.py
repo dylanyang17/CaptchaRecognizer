@@ -1,6 +1,4 @@
 import os
-import logging
-import coloredlogs
 
 
 class Config:
@@ -10,10 +8,6 @@ class Config:
     TRAIN_DATA_PATH = os.path.join(DATA_DIR, 'train_data')
     VALID_DATA_PATH = os.path.join(DATA_DIR, 'valid_data')
     TEST_DATA_PATH = os.path.join(DATA_DIR, 'test_data')
-
-    logger = logging.getLogger('logger')
-    coloredlogs.install(level='DEBUG', logger=logger,
-                        fmt='%(asctime)s %(levelname)s %(message)s')
 
     batch_size = 32
     lr = 0.001

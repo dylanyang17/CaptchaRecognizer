@@ -6,11 +6,9 @@ from torch.utils.data import Dataset, DataLoader
 from torch import nn, optim
 import logging
 
+from logger import logger
 from config import Config
 from cnn import CNN
-
-
-logger = Config.logger
 
 
 class CaptchaDataSet(Dataset):
@@ -39,10 +37,14 @@ def train_cnn(train_dataloader, valid_dataloader, test_dataloader):
 
 
 if __name__ == '__main__':
-    train_dataset = CaptchaDataSet(Config.TRAIN_DATA_PATH)
-    valid_dataset = CaptchaDataSet(Config.VALID_DATA_PATH)
-    test_dataset = CaptchaDataSet(Config.TEST_DATA_PATH)
-    train_dataloader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
-    valid_dataloader = DataLoader(dataset=valid_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
-    test_dataloader = DataLoader(dataset=test_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
-    train_cnn(train_dataloader, valid_dataloader, test_dataloader)
+    # train_dataset = CaptchaDataSet(Config.TRAIN_DATA_PATH)
+    # valid_dataset = CaptchaDataSet(Config.VALID_DATA_PATH)
+    # test_dataset = CaptchaDataSet(Config.TEST_DATA_PATH)
+    # train_dataloader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
+    # valid_dataloader = DataLoader(dataset=valid_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
+    # test_dataloader = DataLoader(dataset=test_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
+    # train_cnn(train_dataloader, valid_dataloader, test_dataloader)
+    logger.debug('lalala')
+    logger.info('lalala')
+    logger.warning('lalala')
+    logger.error('lalala')
