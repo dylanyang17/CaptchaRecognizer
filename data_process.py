@@ -1,6 +1,8 @@
 import os
 from random import choice
 from captcha.image import ImageCaptcha
+from numpy import ndarray
+from skimage import filters
 
 
 def gen_images(image_dir, alphabet, captcha_len, image_num):
@@ -31,11 +33,38 @@ def gen_images(image_dir, alphabet, captcha_len, image_num):
     return captchas
 
 
-def images2data(img_dir):
+def images2data(image_dir, captchas, data_path):
     """
     将若干张图片转为便于输入网络的数据格式，图片均为 png 格式
-    :param img_dir: 图片目录
-    :param
+    :param image_dir: str, 图片目录
+    :param captchas: list, 验证码字符串列表, 也即不带后缀的图片文件名
+    :param data_path: str, 数据文件路径名
     :return:
     """
     pass
+
+
+def rgb2gray(image):
+    """
+    将 r*c*3 形状的 RGB ndarray 转为灰度图
+    :param image: ndarray, RGB 格式的图片
+    :return: ndarray，转为 Gray 之后的结果，形状为 r*c
+    """
+    shape = image.shape
+    ret = ndarray((shape[0], shape[1]))
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            ret[i][j] = image[i][j][0]*0.299 + image[i][j][1]*0.587 + image[i][j][2]*0.114
+    return ret
+
+
+def gray_binarization(image):
+    """
+    将灰度图进行二值化
+    :param image: ndarray，Gray 格式的图片
+    :return: ndarray, 二值化之后的结果
+    """
+    thresh = filters.threshold_otsu(image)
+    image[image > thresh] = 1
+    image[image <= thresh] = 0
+    return image
