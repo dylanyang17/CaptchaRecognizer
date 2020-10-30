@@ -1,7 +1,7 @@
 import os
 import pickle
 import string
-from random import choice
+from random import choice, shuffle
 from captcha.image import ImageCaptcha
 from numpy import ndarray
 from skimage import filters, io
@@ -89,11 +89,23 @@ def gray_binarization(image):
 
 
 if __name__ == '__main__':
+    # Step 0: 定义数据长度
+    tot_num = 5000
+    valid_num = tot_num//10
+    test_num = tot_num//10
+    train_num = tot_num - valid_num - test_num
     # Step 1: 生成验证码图片
     # alphabet = string.ascii_uppercase + string.digits
-    # gen_images(Config.IMAGE_DIR, alphabet, 4, 5000)
-    # Step 2: 将验证码图片进行灰度转换、二值处理再合并存储到数据文件中
+    # gen_images(Config.IMAGE_DIR, alphabet, 4, tot_num)
+    # Step 2: 将验证码图片进行灰度转换、二值处理再合并分别存储到三类数据文件中
     data = images2data(Config.IMAGE_DIR, None)
+    shuffle(data)
+    valid_data = data[:valid_num]
+    test_data = data[valid_num:valid_num+test_num]
+    train_data = data[valid_num+test_num:]
     with open(Config.TRAIN_DATA_PATH, 'wb') as f:
-        pickle.dump(data, f)
-    pass
+        pickle.dump(train_data, f)
+    with open(Config.VALID_DATA_PATH, 'wb') as f:
+        pickle.dump(valid_data, f)
+    with open(Config.TEST_DATA_PATH, 'wb') as f:
+        pickle.dump(test_data, f)
