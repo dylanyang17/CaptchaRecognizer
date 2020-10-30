@@ -4,9 +4,13 @@ import os
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset, DataLoader
 from torch import nn, optim
+import logging
 
 from config import Config
 from cnn import CNN
+
+
+logger = Config.logger
 
 
 class CaptchaDataSet(Dataset):

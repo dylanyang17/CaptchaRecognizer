@@ -94,9 +94,11 @@ if __name__ == '__main__':
     valid_num = tot_num//10
     test_num = tot_num//10
     train_num = tot_num - valid_num - test_num
+
     # Step 1: 生成验证码图片
     # alphabet = string.ascii_uppercase + string.digits
     # gen_images(Config.IMAGE_DIR, alphabet, 4, tot_num)
+
     # Step 2: 将验证码图片进行灰度转换、二值处理再合并分别存储到三类数据文件中
     data = images2data(Config.IMAGE_DIR, None)
     shuffle(data)
