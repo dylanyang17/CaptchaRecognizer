@@ -3,8 +3,10 @@ import pickle
 import string
 from random import choice, shuffle
 from captcha.image import ImageCaptcha
+import numpy as np
 from numpy import ndarray
-from skimage import filters, io
+from skimage import filters, io, transform
+from matplotlib import pyplot as plt
 
 from config import Config
 
@@ -37,24 +39,29 @@ def gen_images(image_dir, alphabet, captcha_len, image_num):
     return captchas
 
 
-def images2data(image_dir, captchas):
+def images2data(image_dir, captchas, suffix):
     """
-    将若干张图片转为便于输入网络的数据格式，图片均为 png 格式
+    将若干张图片转为便于输入网络的数据格式
     :param image_dir: str, 图片目录
     :param captchas: list, 验证码字符串列表, 也即不带后缀的图片文件名，为 None 时使用 image_dir 下的所有图片
-    :param save_path: str, 要存储数据的路径
+    :param suffix: str, 图片后缀名
     :return 返回列表格式的数据，形如 [{'captcha': ..., 'image': ...}]
     """
     data = []
     if captchas is None:
         captchas = os.listdir(image_dir)
-        captchas = list(filter(lambda x: x.split('.')[1] == 'png', captchas))
+        captchas = list(filter(lambda x: x.split('.')[1] == suffix, captchas))
         captchas = list(map(lambda x: x.split('.')[0], captchas))
     tot_num = len(captchas)
     handled_num = 0
     for captcha in captchas:
-        path = os.path.join(image_dir, captcha + '.png')
-        image = rgb2gray(io.imread(path)/255)
+        path = os.path.join(image_dir, captcha + '.%s' % suffix)
+        image = io.imread(path)/255
+        image = transform.resize(image, Config.image_shape)
+        plt.imshow(image)
+        plt.show()
+        image = rgb2gray(image)
+        image.astype(np.uint8)
         image = gray_binarization(image)
         data.append({'captcha': captcha, 'image': image})
         handled_num += 1
@@ -96,11 +103,10 @@ if __name__ == '__main__':
     train_num = tot_num - valid_num - test_num
 
     # Step 1: 生成验证码图片
-    # alphabet = string.ascii_uppercase + string.digits
-    # gen_images(Config.IMAGE_DIR, alphabet, 4, tot_num)
+    # gen_images(Config.IMAGE_DIR, Config.alphabet, 4, tot_num)
 
     # Step 2: 将验证码图片进行灰度转换、二值处理再合并分别存储到三类数据文件中
-    data = images2data(Config.IMAGE_DIR, None)
+    data = images2data(Config.IMAGE_DIR, None, 'png')
     shuffle(data)
     valid_data = data[:valid_num]
     test_data = data[valid_num:valid_num+test_num]
