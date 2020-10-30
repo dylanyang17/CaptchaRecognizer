@@ -6,7 +6,7 @@ from captcha.image import ImageCaptcha
 from numpy import ndarray
 from skimage import filters, io
 
-from config import IMAGE_DIR, DATA_DIR
+from config import Config
 
 
 def gen_images(image_dir, alphabet, captcha_len, image_num):
@@ -37,13 +37,13 @@ def gen_images(image_dir, alphabet, captcha_len, image_num):
     return captchas
 
 
-def images2data(image_dir, captchas, save_path):
+def images2data(image_dir, captchas):
     """
     将若干张图片转为便于输入网络的数据格式，图片均为 png 格式
-    数据格式如 [{'captcha': ..., 'image': ...}]，使用 pickle 存储
     :param image_dir: str, 图片目录
     :param captchas: list, 验证码字符串列表, 也即不带后缀的图片文件名，为 None 时使用 image_dir 下的所有图片
     :param save_path: str, 要存储数据的路径
+    :return 返回列表格式的数据，形如 [{'captcha': ..., 'image': ...}]
     """
     data = []
     if captchas is None:
@@ -59,8 +59,7 @@ def images2data(image_dir, captchas, save_path):
         data.append({'captcha': captcha, 'image': image})
         handled_num += 1
         print('\rimages2data: %d/%d %.2f%%' % (handled_num, tot_num, handled_num/tot_num*100), end='')
-    with open(save_path, 'wb') as f:
-        pickle.dump(data, f)
+    return data
 
 
 def rgb2gray(image):
@@ -92,7 +91,9 @@ def gray_binarization(image):
 if __name__ == '__main__':
     # Step 1: 生成验证码图片
     # alphabet = string.ascii_uppercase + string.digits
-    # gen_images(IMAGE_DIR, alphabet, 4, 5000)
+    # gen_images(Config.IMAGE_DIR, alphabet, 4, 5000)
     # Step 2: 将验证码图片进行灰度转换、二值处理再合并存储到数据文件中
-    # images2data(IMAGE_DIR, None, os.path.join(DATA_DIR, 'train_data'))
+    data = images2data(Config.IMAGE_DIR, None)
+    with open(Config.TRAIN_DATA_PATH, 'wb') as f:
+        pickle.dump(data, f)
     pass
