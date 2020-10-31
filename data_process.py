@@ -58,8 +58,6 @@ def images2data(image_dir, captchas, suffix):
         path = os.path.join(image_dir, captcha + '.%s' % suffix)
         image = io.imread(path)/255
         image = transform.resize(image, Config.image_shape)
-        plt.imshow(image)
-        plt.show()
         image = rgb2gray(image)
         image.astype(np.uint8)
         image = gray_binarization(image)
@@ -91,13 +89,13 @@ def gray_binarization(image):
     """
     thresh = filters.threshold_otsu(image)
     image[image > thresh] = 1
-    image[image <= thresh] = 0
+    image[image <= thresh] = -1
     return image
 
 
 if __name__ == '__main__':
     # Step 0: 定义数据长度
-    tot_num = 5000
+    tot_num = 50000
     valid_num = tot_num//10
     test_num = tot_num//10
     train_num = tot_num - valid_num - test_num

@@ -38,7 +38,9 @@ class CaptchaDataSet(Dataset):
 
     def __getitem__(self, item):
         captcha = self.data[item]['captcha']
-        return captcha2label(captcha), self.data[item]['image']
+        image = self.data[item]['image']
+        image[image == 0] = -1
+        return captcha2label(captcha), image
 
 
 def calc_acc(net, device, dataloaders):
@@ -54,18 +56,18 @@ def calc_acc(net, device, dataloaders):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 outputs = net(inputs)
-                prediction = torch.argmax(outputs, dim=1)
+                prediction = torch.argmax(outputs, dim=2)
                 gt = labels
                 y_pred.extend(prediction.cpu().numpy().tolist())
                 y_true.extend(gt.cpu().numpy().tolist())
                 correct += ((prediction == gt).sum(dim=1) == 4).sum().float()
                 # correct += (prediction == gt).sum().float()
                 total += len(labels)
-            ret.append(float(correct/total))
+            ret.append(float(correct / total))
     return ret
 
 
-def train(net, device, optimizer, criterion, train_dataloader, valid_dataloader, test_dataloader):
+def train(net, device, optimizer, train_dataloader, valid_dataloader, test_dataloader):
     now = time.clock()
     for epoch in range(Config.epoch_num):
         running_loss = 0.0
@@ -76,10 +78,14 @@ def train(net, device, optimizer, criterion, train_dataloader, valid_dataloader,
             labels = labels.to(device)
             optimizer.zero_grad()
             outputs = net(inputs)
-            loss = criterion(outputs, labels)
+            criterion = nn.CrossEntropyLoss()
+            loss = criterion(outputs[:, 0, :], labels[:, 0])
+            for j in range(1, Config.captcha_len):
+                criterion = nn.CrossEntropyLoss()
+                loss = loss + criterion(outputs[:, j, :], labels[:, j])
             loss.backward()
-            optimizer.step()
             running_loss += loss.item()
+            optimizer.step()
             cnt += 1
         delta = time.clock() - now
         now = time.clock()
@@ -96,8 +102,7 @@ def train_cnn(train_dataloader, valid_dataloader, test_dataloader):
     logger.info('device: %s' % device.__str__())
     net = CNN().to(device)
     optimizer = optim.Adam(net.parameters(), lr=Config.lr)
-    criterion = nn.CrossEntropyLoss()
-    train(net, device, optimizer, criterion, train_dataloader, valid_dataloader, test_dataloader)
+    train(net, device, optimizer, train_dataloader, valid_dataloader, test_dataloader)
 
 
 if __name__ == '__main__':

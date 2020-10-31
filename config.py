@@ -19,7 +19,7 @@ class Config:
     label_len = len(alphabet) * captcha_len
     final_net_path = os.path.join(MODELS_DIR, '560.model')
 
-    batch_size = 64
-    lr = 0.001
+    batch_size = 128
+    lr = 0.0001
     epoch_num = 10000
     save_interval = 20
