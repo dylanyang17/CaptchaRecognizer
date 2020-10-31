@@ -19,7 +19,7 @@ def run_net(net, data):
     :return:
     """
     output = net(data)
-    prediction = torch.argmax(output, dim=1)
+    prediction = torch.argmax(output, dim=2)
     tmp = prediction.squeeze(0).detach().numpy()
     print(tmp, type(tmp), tmp.dtype)
     result = ''.join(map(lambda x: Config.alphabet[x], tmp))
@@ -37,7 +37,7 @@ def predict(image_path):
 
 
 if __name__ == '__main__':
-    # image_path = os.path.join(Config.IMAGE_DIR, 'HB4W.png')
-    image_path = os.path.join(Config.DATA_DIR, 'Q57B.jpg')
+    # image_path = os.path.join(Config.IMAGE_DIR, '8LNR.png')
+    image_path = os.path.join('data/small_images', '1KNG.png')
     result = predict(image_path)
     print(result)

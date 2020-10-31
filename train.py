@@ -67,9 +67,9 @@ def calc_acc(net, device, dataloaders):
     return ret
 
 
-def train(net, device, optimizer, train_dataloader, valid_dataloader, test_dataloader):
+def train(net, device, start_epoch, optimizer, train_dataloader, valid_dataloader, test_dataloader):
     now = time.clock()
-    for epoch in range(Config.epoch_num):
+    for epoch in range(start_epoch, Config.epoch_num):
         running_loss = 0.0
         cnt = 0
         for i, data in enumerate(train_dataloader):
@@ -91,25 +91,31 @@ def train(net, device, optimizer, train_dataloader, valid_dataloader, test_datal
         now = time.clock()
         train_acc, valid_acc, test_acc = calc_acc(net, device, [train_dataloader, valid_dataloader, test_dataloader])
         logger.info('[%d] loss: %.3f  cost: %.3f  train_acc: %.3f  valid_acc: %.3f  test_acc: %.3f' %
-                    (epoch + 1, running_loss / cnt, delta, train_acc, valid_acc, test_acc))
-        if (epoch) % Config.save_interval == 0:
+                    (epoch, running_loss / cnt, delta, train_acc, valid_acc, test_acc))
+        if epoch % Config.save_interval == 0:
             torch.save(net, os.path.join(Config.TRAIN_DIR, '%d.model' % epoch))
 
 
-def train_cnn(train_dataloader, valid_dataloader, test_dataloader):
-    """ 开始训练 CNN 模型 """
+def train_cnn(model_epoch, train_dataloader, valid_dataloader, test_dataloader):
+    """
+    开始训练 CNN 模型
+    :param model_epoch: 要载入的模型的轮数，为 None 时重新训练
+    """
     device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
     logger.info('device: %s' % device.__str__())
-    net = CNN().to(device)
+    if model_epoch is None:
+        net = CNN().to(device)
+    else:
+        net = torch.load(os.path.join(Config.TRAIN_DIR, '%d.model' % model_epoch)).to(device)
     optimizer = optim.Adam(net.parameters(), lr=Config.lr)
-    train(net, device, optimizer, train_dataloader, valid_dataloader, test_dataloader)
+    train(net, device, model_epoch+1, optimizer, train_dataloader, valid_dataloader, test_dataloader)
 
 
 if __name__ == '__main__':
     train_dataset = CaptchaDataSet(Config.TRAIN_DATA_PATH)
     valid_dataset = CaptchaDataSet(Config.VALID_DATA_PATH)
     test_dataset = CaptchaDataSet(Config.TEST_DATA_PATH)
-    train_dataloader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
-    valid_dataloader = DataLoader(dataset=valid_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
-    test_dataloader = DataLoader(dataset=test_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size)
-    train_cnn(train_dataloader, valid_dataloader, test_dataloader)
+    train_dataloader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
+    valid_dataloader = DataLoader(dataset=valid_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
+    test_dataloader = DataLoader(dataset=test_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
+    train_cnn(420, train_dataloader, valid_dataloader, test_dataloader)

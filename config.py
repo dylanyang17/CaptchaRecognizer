@@ -3,7 +3,7 @@ import string
 
 
 class Config:
-    DATA_SIZE = 'small'
+    DATA_SIZE = 'big'
     DATA_DIR = 'data/'
     IMAGE_DIR = os.path.join(DATA_DIR, '%s_images/' % DATA_SIZE)
     TRAIN_DIR = 'train/'
@@ -22,7 +22,7 @@ class Config:
     captcha_len = 4
     alphabet = string.ascii_uppercase + string.digits
     label_len = len(alphabet) * captcha_len
-    final_net_path = os.path.join(MODELS_DIR, '560.model')
+    final_net_path = os.path.join(MODELS_DIR, '200.model')
 
     batch_size = 128
     lr = 0.001
