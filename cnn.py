@@ -18,13 +18,17 @@ class CNN(nn.Module):
             nn.MaxPool2d(2),
             nn.Dropout(p=.2),
         )
-        self.fc = nn.Linear(432, Config.label_len)
+        self.fc1 = nn.Sequential(
+            nn.Linear(432, 200),
+            nn.ReLU()
+        )
+        self.fc2 = nn.Linear(200, Config.label_len)
 
     def forward(self, input_data):
         input_data = input_data.float()
         output = self.cnn2(self.cnn1(input_data.unsqueeze(1)))
         batch_size = output.shape[0]
         output = output.reshape((batch_size, -1))
-        output = self.fc(output)
+        output = self.fc2(self.fc1(output))
         output = output.reshape((batch_size, Config.captcha_len, len(Config.alphabet)))
         return output

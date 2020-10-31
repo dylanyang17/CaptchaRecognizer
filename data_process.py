@@ -33,7 +33,7 @@ def gen_images(image_dir, alphabet, captcha_len, image_num):
                 break
         flag[captcha] = True
         captchas.append(captcha)
-        image = ImageCaptcha()
+        image = ImageCaptcha(fonts=Config.fonts)
         image.generate(captcha)
         image.write(captcha, os.path.join(image_dir, captcha + '.png'))
     return captchas
@@ -95,7 +95,7 @@ def gray_binarization(image):
 
 if __name__ == '__main__':
     # Step 0: 定义数据长度
-    tot_num = 50000
+    tot_num = 1000
     valid_num = tot_num//10
     test_num = tot_num//10
     train_num = tot_num - valid_num - test_num
@@ -104,14 +104,14 @@ if __name__ == '__main__':
     # gen_images(Config.IMAGE_DIR, Config.alphabet, 4, tot_num)
 
     # Step 2: 将验证码图片进行灰度转换、二值处理再合并分别存储到三类数据文件中
-    data = images2data(Config.IMAGE_DIR, None, 'png')
-    shuffle(data)
-    valid_data = data[:valid_num]
-    test_data = data[valid_num:valid_num+test_num]
-    train_data = data[valid_num+test_num:]
-    with open(Config.TRAIN_DATA_PATH, 'wb') as f:
-        pickle.dump(train_data, f)
-    with open(Config.VALID_DATA_PATH, 'wb') as f:
-        pickle.dump(valid_data, f)
-    with open(Config.TEST_DATA_PATH, 'wb') as f:
-        pickle.dump(test_data, f)
+    # data = images2data(Config.IMAGE_DIR, None, 'png')
+    # shuffle(data)
+    # valid_data = data[:valid_num]
+    # test_data = data[valid_num:valid_num+test_num]
+    # train_data = data[valid_num+test_num:]
+    # with open(Config.TRAIN_DATA_PATH, 'wb') as f:
+    #     pickle.dump(train_data, f)
+    # with open(Config.VALID_DATA_PATH, 'wb') as f:
+    #     pickle.dump(valid_data, f)
+    # with open(Config.TEST_DATA_PATH, 'wb') as f:
+    #     pickle.dump(test_data, f)
