@@ -17,7 +17,7 @@ class Config:
 
     # 目前的验证码：60*160，且只含有四位字符，每个字符为数字或大写字母，字体为 fonts
     image_shape = (60, 160)
-    fonts = ['Times New Roman.ttf']
+    fonts = ['Times New Roman.ttf', 'hollow.ttf']
     for i in range(len(fonts)):
         fonts[i] = os.path.join(FONTS_DIR, fonts[i])
     captcha_len = 4

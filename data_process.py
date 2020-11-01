@@ -96,7 +96,7 @@ def gray_binarization(image):
 
 if __name__ == '__main__':
     # Step 0: 定义数据长度
-    tot_num = 1000
+    tot_num = 100000
     valid_num = tot_num//10
     train_num = tot_num - valid_num
 
@@ -108,11 +108,14 @@ if __name__ == '__main__':
     # shuffle(data)
     # valid_data = data[:valid_num]
     # train_data = data[valid_num:]
-    test_data = images2data(Config.TEST_IMAGE_DIR, None, 'jpg')
-    shuffle(test_data)
     # with open(Config.TRAIN_DATA_PATH, 'wb') as f:
     #     pickle.dump(train_data, f)
     # with open(Config.VALID_DATA_PATH, 'wb') as f:
     #     pickle.dump(valid_data, f)
-    with open(Config.TEST_DATA_PATH, 'wb') as f:
-        pickle.dump(test_data, f)
+
+    # test_data = images2data(Config.TEST_IMAGE_DIR, None, 'jpg')
+    # shuffle(test_data)
+    # with open(Config.TEST_DATA_PATH, 'wb') as f:
+    #     pickle.dump(test_data, f)
+
+

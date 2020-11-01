@@ -3,6 +3,7 @@ from skimage import io
 import torch
 from torch.utils.data import Dataset, DataLoader
 from matplotlib import pyplot as plt
+from captcha.image import ImageCaptcha
 
 from config import Config
 from data_process import images2data
@@ -37,7 +38,7 @@ def predict(image_path):
 
 
 if __name__ == '__main__':
-    # image_path = os.path.join(Config.IMAGE_DIR, '8LNR.png')
+    image_path = os.path.join(Config.IMAGE_DIR, '8LNR.png')
     image_path = os.path.join('data/small_images', '1KNG.png')
     result = predict(image_path)
     print(result)

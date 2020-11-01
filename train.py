@@ -118,4 +118,4 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
     valid_dataloader = DataLoader(dataset=valid_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
     test_dataloader = DataLoader(dataset=test_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
-    train_cnn(140, train_dataloader, valid_dataloader, test_dataloader)
+    train_cnn(0, train_dataloader, valid_dataloader, test_dataloader)
