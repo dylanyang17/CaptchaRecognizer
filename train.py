@@ -103,7 +103,7 @@ def train_cnn(model_epoch, train_dataloader, valid_dataloader, test_dataloader):
     """
     device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
     logger.info('device: %s' % device.__str__())
-    if model_epoch is None:
+    if model_epoch == 0:
         net = CNN().to(device)
     else:
         net = torch.load(os.path.join(Config.TRAIN_DIR, '%d.model' % model_epoch)).to(device)
@@ -118,4 +118,4 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
     valid_dataloader = DataLoader(dataset=valid_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
     test_dataloader = DataLoader(dataset=test_dataset, shuffle=True, num_workers=0, batch_size=Config.batch_size, pin_memory=True)
-    train_cnn(420, train_dataloader, valid_dataloader, test_dataloader)
+    train_cnn(140, train_dataloader, valid_dataloader, test_dataloader)

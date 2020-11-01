@@ -59,8 +59,9 @@ def images2data(image_dir, captchas, suffix):
         image = io.imread(path)/255
         image = transform.resize(image, Config.image_shape)
         image = rgb2gray(image)
-        image.astype(np.uint8)
         image = gray_binarization(image)
+        # plt.imshow(image)
+        # plt.show()
         data.append({'captcha': captcha, 'image': image})
         handled_num += 1
         print('\rimages2data: %d/%d %.2f%%' % (handled_num, tot_num, handled_num/tot_num*100), end='')
@@ -97,21 +98,21 @@ if __name__ == '__main__':
     # Step 0: 定义数据长度
     tot_num = 1000
     valid_num = tot_num//10
-    test_num = tot_num//10
-    train_num = tot_num - valid_num - test_num
+    train_num = tot_num - valid_num
 
     # Step 1: 生成验证码图片
-    gen_images(Config.IMAGE_DIR, Config.alphabet, 4, tot_num)
+    # gen_images(Config.IMAGE_DIR, Config.alphabet, 4, tot_num)
 
     # Step 2: 将验证码图片进行灰度转换、二值处理再合并分别存储到三类数据文件中
-    data = images2data(Config.IMAGE_DIR, None, 'png')
-    shuffle(data)
-    valid_data = data[:valid_num]
-    test_data = data[valid_num:valid_num+test_num]
-    train_data = data[valid_num+test_num:]
-    with open(Config.TRAIN_DATA_PATH, 'wb') as f:
-        pickle.dump(train_data, f)
-    with open(Config.VALID_DATA_PATH, 'wb') as f:
-        pickle.dump(valid_data, f)
+    # data = images2data(Config.IMAGE_DIR, None, 'png')
+    # shuffle(data)
+    # valid_data = data[:valid_num]
+    # train_data = data[valid_num:]
+    test_data = images2data(Config.TEST_IMAGE_DIR, None, 'jpg')
+    shuffle(test_data)
+    # with open(Config.TRAIN_DATA_PATH, 'wb') as f:
+    #     pickle.dump(train_data, f)
+    # with open(Config.VALID_DATA_PATH, 'wb') as f:
+    #     pickle.dump(valid_data, f)
     with open(Config.TEST_DATA_PATH, 'wb') as f:
         pickle.dump(test_data, f)
